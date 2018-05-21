@@ -15,13 +15,12 @@ A greeting in english: Hello              "Films": {
 Rating = 5 Stars                              "Rating": "⭐⭐⭐⭐⭐"
                                             }
 Los amantes del círculo polar:            }
-Rating = ⭐⭐⭐⭐⭐                         }
+Rating = ⭐⭐⭐⭐⭐                       }
                                       }
 ```
----
 ## Overview
 
-- eno is a **structured, plain-text notation** language, related in many ways to its ancestors and relatives *JSON*, *YAML*, *TOML*, *ArchieML*, *Markdown*, and others
+- eno is a **structured, plain-text notation** language, related in many ways to its ancestors and relatives *JSON*, *YAML*, *TOML*, *ArchieML*, and others
 - Through its **simple syntax and versatile nature** it targets a wide audience, both in regards to cultural background as well as technical ability
 - Documents authored as eno comprise of *elements* that map to **ubiquitous structural types** in all programing languages
 - On a syntactic level there are no types in eno, **only textual representations**
@@ -30,7 +29,6 @@ Rating = ⭐⭐⭐⭐⭐                         }
 - eno **notation is hybrid - sequential AND associative**, the API lets you interpret documents (or sections therein) either way
 - There is no indentation and **all whitespace is optional**, as are empty lines
 
----
 ```eno
 > A more technical usecase
 
@@ -48,17 +46,11 @@ command:
 }
 -- json payload
 ```
----
 
-## Filename Extension
+## Current Status
 
-eno documents use the extension `.eno`
+eno has been conceived in a 2-3 month focused period of applied research and development in early spring 2018. It's currently undergoing eager preparation for its first public announcement and release. The formal language specification, learning resources and first and foremost the existing reference implementation(s) will go online in the coming days and weeks.
 
-## MIME Type
-
-On the internet eno documents are transferred as `text/eno`
-
----
 ```eno
                                     {
                                       "default": {
@@ -76,15 +68,22 @@ ultraservice: enabled                     "hyperservice": "disabled",
                                       }
                                     }
 ```
----
+
+## Filename Extension
+
+eno documents use the extension `.eno`
+
+## MIME Type
+
+On the internet eno documents are transferred as `text/eno`
 
 ## Design Notes
 
 >On whitespace:
 >
-> The whole idea with ignoring whitespace at the begin, end,
+> "The whole idea with ignoring whitespace at the begin, end,
 > between different connected lines and between relevant tokens is:
 > When you write on paper you don't care if something is "a little to the
 > right, left, further down or whatever". As long as "words" or whatever you
 > write on paper are clearly separated and graspable by their intent,
-> everything is fine. So this is how eno should behave as well.
+> everything is fine. So this is how eno behaves as well."
