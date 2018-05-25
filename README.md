@@ -1,6 +1,7 @@
 # eno
 
-A structured data notation language for everyone.
+A structured data notation language for everyone.  
+https://eno-lang.org
 
 ```eno
                                       {
@@ -49,7 +50,7 @@ command:
 
 ## Current Status
 
-eno has been conceived in a 2-3 month focused period of applied research and development in early spring 2018. It's currently undergoing eager preparation for its first public announcement and release. The formal language specification, learning resources and first and foremost the existing reference implementation(s) will go online in the coming days and weeks.
+eno has been conceived in a 2-3 month focused period of applied research and development in early spring 2018. It's currently undergoing eager preparation for its public announcement and release. There is a preliminary [learning page](https://eno-lang.org/learn/), growing [library documentation](https://eno-lang.org/js/) for [eno's js implementation](https://www.npmjs.com/package/enojs), already battle-tested [syntax support for atom](https://eno-lang.org/js/) and much more in the making. The formal language specification will also go online right here in this repository sometime in the coming weeks. Check https://eno-lang.org regularly to keep up with development.
 
 ```eno
                                     {
