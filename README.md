@@ -19,6 +19,20 @@ Los amantes del círculo polar:            }
 Rating = ⭐⭐⭐⭐⭐                       }
                                       }
 ```
+
+## eno is ...
+
+As fast to write and edit as it probably gets.  
+An excellent format for authoring content for the web.  
+A go-to content format especially for static site generation.  
+And for all kinds of generative documents and documentation actually.  
+Developer's bliss for quickly creating rich, safe user experiences around structured text.
+
+## eno isn't ...
+
+Arbitrary automatic data de/serialization, that's what yaml, toml, etc. are for.  
+Human-readable inter-application/process communication, we have json for that.
+
 ## Overview
 
 - eno is a **structured, plain-text notation** language, related in many ways to its ancestors and relatives *JSON*, *YAML*, *TOML*, *ArchieML*, and others
@@ -27,7 +41,7 @@ Rating = ⭐⭐⭐⭐⭐                       }
 - On a syntactic level there are no types in eno, **only textual representations**
 - eno provides a high-grade **API to validate and obtain fully customizable types** on the application level instead
 - All eno implementations feature **100% internationalized, hand written, human language error messages**
-- eno **notation is hybrid - sequential AND associative**, the API lets you interpret documents (or sections therein) either way
+- eno allows **sequential and associative reading**, you can seamlessly blend between configuration/metadata and content in a single document
 - There is no indentation and **all whitespace is optional**, as are empty lines
 
 ```eno
@@ -50,7 +64,7 @@ command:
 
 ## Current Status
 
-eno has been conceived in a 2-3 month focused period of applied research and development in early spring 2018. It's currently undergoing eager preparation for its public announcement and release. There is a preliminary [learning page](https://eno-lang.org/learn/), growing [library documentation](https://eno-lang.org/js/) for [eno's js implementation](https://www.npmjs.com/package/enojs), already battle-tested [syntax support for atom](https://eno-lang.org/js/) and much more in the making. The formal language specification will also go online right here in this repository sometime in the coming weeks. Check https://eno-lang.org regularly to keep up with development.
+eno has been conceived in a 2-3 month focused period of applied research and development in early spring 2018. It's currently undergoing eager preparation for its public announcement and release. There is a growing [learning page](https://eno-lang.org/learn/), complete [library documentation](https://eno-lang.org/js/) for [eno's js implementation](https://www.npmjs.com/package/enojs), battle-tested [language support for atom](https://eno-lang.org/js/) and much more in the making. The formal language specification will also go online right here in this repository sometime in the coming weeks. Check https://eno-lang.org regularly to keep up with development.
 
 ```eno
                                     {
