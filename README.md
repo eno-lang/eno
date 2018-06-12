@@ -71,7 +71,7 @@ resources](https://eno-lang.org/write/) for the language itself, library
 implementations for [Javascript](https://eno-lang.org/javascript/),
 [Python](https://eno-lang.org/python/) and [Ruby](https://eno-lang.org/ruby/)
 (with more on the roadmap), syntax highlighting support for
-[Atom](https://eno-lang.org/js/) and [Sublime
+[Atom](https://atom.io/packages/language-eno/) and [Sublime
 Text](https://github.org/eno-lang/sublime-eno/) and much more in the making. The
 formal language specification as ABNF will also go online right here in this repository
 sometime in the coming weeks. Check https://eno-lang.org regularly to keep up
