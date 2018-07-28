@@ -184,3 +184,12 @@ my_name < my_template
 ```
 
 A `Template` is a `Name` referencing an `Element` to be copied.
+
+## Value
+
+```eno
+my_name: my_value
+```
+
+A `Value` might be associated with a `Block`, `Field`, `Fieldset Entry` or `List Item`.
+`Values` can only include leading or trailing whitespace when they come from a `Block`.
