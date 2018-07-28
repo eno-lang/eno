@@ -1,0 +1,54 @@
+;; *************************************
+;; *                                   *
+;; *        WORK IN PROGRESS           *
+;; *                                   *
+;; *************************************
+
+
+eno = instruction *( newline instruction )
+
+;; Whitespace
+
+whitespace = *( SP / HTAB )
+
+SP   = U+0020  ; ASCII Space
+HTAB = U+0009  ; ASCII Horizontal tab
+
+;; Newline
+
+newline = LF / CR LF
+
+LF = U+000A  ; Line feed ("\n")
+CR = U+000D  ; Carriage return ("\r")
+
+;; Comment
+
+comment-operator = U+003E  ; Greater-than sign (>)
+non-eol =  %x09
+non-eol =/ %x20-10FFFF
+
+comment = comment-operator *non-eol
+
+;; Name
+
+name-instruction = name name-operator
+
+name = escaped-name / unescaped-name
+
+escaped-name = 1*BACKTICK foo 1*BACKTICK
+unescaped-name = foo
+
+name-operator = U+003A  ; Colon (:)
+
+;; Continuations
+
+line-continuation = ( VERTICAL-BAR / BACKSLASH ) value
+
+newline-continuation-operator =
+
+VERTICAL-BAR = U+007C
+BACKSLASH    = U+005C
+
+;; Value
+
+value = whitespace *token whitespace
