@@ -7,27 +7,43 @@
 
 eno = instruction *( newline instruction )
 
+
 ;; Whitespace
+
+ignored-whitespace = whitespace
+retained-whitespace = whitespace
 
 whitespace = *( SP / HTAB )
 
-SP   = U+0020  ; ASCII Space
-HTAB = U+0009  ; ASCII Horizontal tab
+SP   = U+0020  ; " " (Space)
+HTAB = U+0009  ; "  " (Horizontal tab)
+
 
 ;; Newline
 
 newline = LF / CR LF
 
-LF = U+000A  ; Line feed ("\n")
-CR = U+000D  ; Carriage return ("\r")
+LF = U+000A  ; "\n" (Line feed)
+CR = U+000D  ; "\r" (Carriage return)
+
 
 ;; Comment
 
-comment-operator = U+003E  ; Greater-than sign (>)
-non-eol =  %x09
-non-eol =/ %x20-10FFFF
+comment = comment-operator ignored-whitespace optional-token ignored-whitespace
 
-comment = comment-operator *non-eol
+comment-operator = GREATER-THAN-SIGN
+
+GREATER-THAN-SIGN = U+003E  ; ">"
+
+
+;; Fieldset entry
+
+fieldset-entry = TODO fieldset-entry-operator value
+
+fieldset-entry-operator = EQUALS-SIGN
+
+EQUALS-SIGN = U+003D  ; "="
+
 
 ;; Name
 
@@ -35,20 +51,44 @@ name-instruction = name name-operator
 
 name = escaped-name / unescaped-name
 
-escaped-name = 1*BACKTICK foo 1*BACKTICK
-unescaped-name = foo
+escaped-name = 1*BACKTICK ignored-whitespace required-token ignored-whitespace 1*BACKTICK  ; Note: The number of backticks at the start and end must be the same
+unescaped-name = TODO
 
-name-operator = U+003A  ; Colon (:)
+name-operator = COLON
 
-;; Continuations
+BACKTICK = U+0060  ; "`"
+COLON = U+003A     ; ":"
 
-line-continuation = ( VERTICAL-BAR / BACKSLASH ) value
 
-newline-continuation-operator =
+;; Line continuations
 
-VERTICAL-BAR = U+007C
-BACKSLASH    = U+005C
+line-continuation = ( line-continuation-operator / newline-continuation-operator ) value
+
+newline-continuation-operator = VERTICAL-BAR
+line-continuation-operator = BACKSLASH
+
+VERTICAL-BAR = U+007C  ; "|"
+BACKSLASH    = U+005C  ; "\"
+
+
+;; Section
+
+section = section-operator TODO
+
+section-operator = 1*HASH
+
+HASH = U+0023
+
+
+;; Token
+
+optional-token = *non-eol
+required-token = 1*non-eol
+
+non-eol =  %x09
+non-eol =/ %x20-10FFFF
+
 
 ;; Value
 
-value = whitespace *token whitespace
+value = ignored-whitespace optional-token ignored-whitespace

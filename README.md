@@ -11,9 +11,17 @@ progress, in the meantime please gather further information from the the
 [website](https://eno-lang.org) and the terminology glossary, and feel free to
 open an issue here in the issue tracker if anything is unclear.
 
+## Encoding
+
+Eno documents must be encoded as `UTF-8`.
+
 ## Filename Extension
 
-eno documents use the `.eno` extension.
+Eno documents use the `.eno` extension.
+
+## MIME Type
+
+On the internet eno documents are transferred as `text/eno`.
 
 ## Language stability and development plan
 
@@ -35,7 +43,3 @@ and is fully supported by all library implementations it will consequently be
 frozen and locked, with no further changes planned nor allowed from that point
 on, or in other words, eno *1.0.0 Final* (or whatever the name then) will be the next and last iteration
 of the language.
-
-## MIME Type
-
-On the internet eno documents are transferred as `text/eno`.
