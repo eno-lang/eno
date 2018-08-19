@@ -5,7 +5,7 @@
 ;; *************************************
 
 
-eno = instruction *( newline instruction )
+document = instruction *( newline instruction )
 
 
 ;; Whitespace
@@ -38,7 +38,7 @@ GREATER-THAN-SIGN = U+003E  ; ">"
 
 ;; Fieldset entry
 
-fieldset-entry = TODO fieldset-entry-operator value
+fieldset-entry = unescaped-name fieldset-entry-operator value
 
 fieldset-entry-operator = EQUALS-SIGN
 
@@ -51,8 +51,8 @@ name-instruction = name name-operator
 
 name = escaped-name / unescaped-name
 
-escaped-name = 1*BACKTICK ignored-whitespace required-token ignored-whitespace 1*BACKTICK  ; Note: The number of backticks at the start and end must be the same
-unescaped-name = TODO
+escaped-name = ignored-whitespace 1*BACKTICK ignored-whitespace required-token ignored-whitespace 1*BACKTICK ignored-whitespace  ; Note: The number of backticks at the start and end must be the same
+unescaped-name = ignored-whitespace required-token ignored-whitespace
 
 name-operator = COLON
 
@@ -60,7 +60,7 @@ BACKTICK = U+0060  ; "`"
 COLON = U+003A     ; ":"
 
 
-;; Line continuations
+;; Line continuation
 
 line-continuation = ( line-continuation-operator / newline-continuation-operator ) value
 
@@ -69,6 +69,15 @@ line-continuation-operator = BACKSLASH
 
 VERTICAL-BAR = U+007C  ; "|"
 BACKSLASH    = U+005C  ; "\"
+
+
+;; List item
+
+list-item = list-item-operator value
+
+list-item-operator = DASH
+
+DASH = U+002D  ; "-"
 
 
 ;; Section
