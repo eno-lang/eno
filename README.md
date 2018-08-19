@@ -3,6 +3,9 @@
 This repository contains the specification documents for the [eno notation
 language](https://eno-lang.org).
 
+*DETAILS.md* contains a work in progress write-up of the more intricate details
+of the eno language specification (those more relevant to implementing than to using it).
+
 *TERMINOLOGY.md* contains a glossary with all terms that are used to describe
 the eno language.
 
