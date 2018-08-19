@@ -1,0 +1,43 @@
+> A field has a name and a value
+language: eno
+
+> The value does not reach beyond the line
+language:|<--- eno --->|
+
+> The value can be empty
+language:
+
+> Whitespace outside of and between name, operator and value is ignored
+language:eno
+  language  :  eno  
+  
+> As you see above, multiple fields with the same name are possible,
+> whether they are allowed is decided by the application.
+
+> Anything goes after the name operator (:)
+This is a sentence: It was a night full of ⭐s and 🤖s in 서울특별시!
+
+> Almost anything goes before the name operator too
+It was a night full of ⭐s and 🤖s in 서울특별시!: That was a sentence.
+
+> Some things are not allowed in the name, they need to be escaped
+`The : in a name needs to be escaped`: The : in a value is fine
+
+> Here's everything that needs to be escaped in a name, and why:
+
+`1:0`: At the first : the name ends, it always needs to be escaped
+
+A-Z: The - is fine when it's preceded by something else
+`-AZ`: The - at the start would start a list item
+
+A # of things : The # is fine if it does not start the name
+`# of things`: The # at the start would start a section
+
+Php\Namespace : The \ is fine if it's not the first non-whitespace character
+`\Php\Namespace`: The \ at the start would start a line continuation
+
+Left|Right : The | is fine if it's not the first character in the name
+`|Right`: The | at the start would start a newline continuation
+
+Greater > Smaller: The > is fine if it's not the first thing in the name
+`> Smaller`: The > at the start would start a comment
