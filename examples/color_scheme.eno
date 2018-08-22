@@ -1,0 +1,127 @@
+> Real usecase example taken from https://github.com/eno-lang/color-schemes/blob/master/schemes/enokai.eno
+>
+> A generated output product of this data can be studied at:
+> https://github.com/eno-lang/color-schemes/blob/master/dist/sublime/enokai.sublime-color-scheme 
+>
+> This file describes a color scheme for syntax highlighting in a meta-format,
+> which is used to generate concrete color scheme description formats
+> for the Sublime Text and Atom editors.
+>
+> There is some metadata ('author', 'name'), a section 'colors' that describes a
+> repository of reusable named colors, as well as the sections 'globals' and 'scopes'
+> where the color names are assigned to scopes and UI elements. Notably in the 'scopes'
+> section there are both regular fields which only assign a foreground color, as well
+> as fieldsets, which serve to describe more detailed decorations ('foreground',
+> 'background', 'styles').
+
+author: Simon Repp
+name: enokai
+
+# colors
+
+cool_graphite  :  #202024
+dim_gray       :  #303030
+gray           :  #484848
+green          :  #a6e22e
+orange         :  #fd971f
+pink           :  #f92672
+red            :  #f92644
+turquoise      :  #66d9ef
+violet         :  #ae81ff
+white          :  #fff
+yellow         :  #e6db74
+
+# globals
+
+background: cool_graphite
+caret: white
+foreground: white
+selection: dim_gray
+
+# scopes
+
+block_name             :  pink
+block_operator         :  green
+
+comment                :
+foreground             =  gray 
+styles                 =  italic
+
+comment_operator       :  gray
+continuation_operator  :  green
+copy_operator          :  green
+entry                  :  turquoise
+entry_operator         :  green
+escape_operator        :  green
+
+invalid                :
+background             =  red
+foreground             =  white
+
+item_operator          :  green
+name                   :  pink
+name_operator          :  green
+
+section1_operator         : violet
+section1_escape_operator  : green
+section1_name             :
+foreground                = yellow
+styles                    = bold
+section1_copy_operator    : green
+section1_template         :
+foreground                = orange
+styles                    = italic
+
+section2_operator         : violet
+section2_escape_operator  : green
+section2_name             :
+foreground                = yellow
+styles                    = bold
+section2_copy_operator    : green
+section2_template         :
+foreground                = orange
+styles                    = italic
+
+section3_operator         : violet
+section3_escape_operator  : green
+section3_name             :
+foreground                = yellow
+styles                    = bold
+section3_copy_operator    : green
+section3_template         :
+foreground                = orange
+styles                    = italic
+
+section4_operator         : violet
+section4_escape_operator  : green
+section4_name             :
+foreground                = yellow
+styles                    = bold
+section4_copy_operator    : green
+section4_template         :
+foreground                = orange
+styles                    = italic
+
+section5_operator         : violet
+section5_escape_operator  : green
+section5_name             :
+foreground                = yellow
+styles                    = bold
+section5_copy_operator    : green
+section5_template         :
+foreground                = orange
+styles                    = italic
+
+section6_operator         : violet
+section6_escape_operator  : green
+section6_name             :
+foreground                = yellow
+styles                    = bold
+section6_copy_operator    : green
+section6_template         :
+foreground                = orange
+styles                    = bold, italic
+
+template               :
+foreground             = orange
+styles                 = italic
