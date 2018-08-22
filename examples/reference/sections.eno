@@ -1,0 +1,38 @@
+> A section called my_section
+# my_section
+
+
+> There is no syntactic differentiation between a section and a list of
+> sections, you just provide multiple sections with the same name if you need
+> multiple sections (applications define and validate the structure of your
+> document through the eno library API, so they know what they get anyway)
+# my_section
+# my_section
+
+
+> A section nested within the last my_section above
+## my_subsection
+
+
+> A section that is sibling to my_subsection above
+## my_sibling_subsection
+
+
+> A section that is nested within my_sibling_subsection
+### my_subsection
+
+> You can go indefintely deeper, but only one layer (#)
+> deeper at a time, the following would be an error:
+> ##### my_subsection
+
+
+> A section that is sibling to my_section above
+# my_sibling_section
+
+
+> This is possible - a section called #my_section
+# #my_section
+
+
+> This would be a nested section called my_section however
+##my_section
