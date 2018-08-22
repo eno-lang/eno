@@ -1,0 +1,106 @@
+> Real usecase example taken from https://simonrepp.com
+>
+> The rendered version of this content can be studied at:
+> https://simonrepp.com/transparency-poker/
+> https://simonrepp.com/de/transparency-poker/
+>
+> This file is one of many pages (represented as eno documents) that
+> are used by a custom static site generator. It stores the 'published'
+> date, as well as 'permalink', 'title' and the actual 'content' in a bilingual
+> form, where the 'DE' and 'EN' data is kept in separate sections.
+>
+> The content is described in a custom markup DSL that allows to specify
+> 'header', 'markdown' 'image', 'video', 'audio', 'small', 'youtube', 'vimeo'
+> elements.
+
+published: 2013
+
+# DE
+
+permalink: transparency-poker
+title: Transparency Poker
+
+## content
+
+header: Transparency Poker
+
+-- markdown
+Ein konzeptuelles Pokerkartenset, erdacht von Matthias Tarasiewicz und von mir
+grafisch gestaltet im Rahmen des Artistic Technology Research Projekts an der
+Universität für angewandte Kunst Wien. Das Kartenset wurde mit anderen
+Projektartefakten 2013 im MAK ausgestellt.
+-- markdown
+
+image:
+class = third
+label = Herz König, Julian Assange
+src = transparency poker/assange.jpg
+
+image:
+class = third
+label = Karo Bube, Jacob Appelbaum
+src = transparency poker/appelbaum.jpg
+
+image:
+class = third
+label = Karo Dame, Birgitta Jónsdóttir
+src = transparency poker/jonsdottir.jpg
+
+image:
+class = third
+label = Kreuz Bube, Daniel Domscheit-Berg
+src = transparency poker/domscheit-berg.jpg
+
+image:
+class = third
+label = Kreuz Dame, Angela Merkel
+src = transparency poker/merkel.jpg
+
+image:
+class = third
+label = Pik König, Barack Obama
+src = transparency poker/obama.jpg
+
+
+# EN < DE
+
+## content
+
+header: Transparency Poker
+
+-- markdown
+A conceptual set of poker cards, contrived by Matthias Tarasiewicz and
+graphically executed by me in the course of the Artistic Technology Research
+project at the University of Applied Arts Vienna. The set was exhibited at
+the MAK alongside other project artifacts in 2013.
+-- markdown
+
+image:
+class = third
+label = King of Hearts, Julian Assange
+src = transparency poker/assange.jpg
+
+image:
+class = third
+label = Jack of Diamonds, Jacob Appelbaum
+src = transparency poker/appelbaum.jpg
+
+image:
+class = third
+label = Queen of Diamonds, Birgitta Jónsdóttir
+src = transparency poker/jonsdottir.jpg
+
+image:
+class = third
+label = Jack of Clubs, Daniel Domscheit-Berg
+src = transparency poker/domscheit-berg.jpg
+
+image:
+class = third
+label = Queen of Clubs, Angela Merkel
+src = transparency poker/merkel.jpg
+
+image:
+class = third
+label = King of Spades, Barack Obama
+src = transparency poker/obama.jpg
