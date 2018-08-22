@@ -32,3 +32,24 @@ const whitespace = ({ value }) => value.replace(/^>|<$/, '');
 
 const myValue = document.field('my_value', whitespace);
 ```
+
+## Can a name include leading/trailing or only whitespace?
+
+No, that's not possible. In general, keys with leading, trailing, or only
+whitespace are more prone to be a potential source of problems than of use (as
+empty space belonging to a variable is not distinguishable from the empty space
+around it in many representations), and given that eno aims to be simple to
+use, not capable of representing every possible usecase one can imagine, this
+has been deliberately not been made available as extra syntax.
+
+Note that escaping a name does not allow you to express leading/trailing or
+purely whitespace either, the outer spacing in an escape sequence allows to
+express an ambiguous case of *escaping an escape sequence* but is always
+trimmed away:
+
+```eno
+`` `my_name` ``: my value 
+```
+```json
+{ "`my_name`": "my value" }
+```
