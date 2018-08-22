@@ -6,13 +6,15 @@ language](https://eno-lang.org).
 *DETAILS.md* contains a work in progress write-up of the more intricate details
 of the eno language specification (those more relevant to implementing than to using it).
 
+*eno.abnf* contains a work in progress formal description of eno's grammar in ABNF notation.
+
+*FAQ.md* contains mixed language details in Q&A format.
+
 *TERMINOLOGY.md* contains a glossary with all terms that are used to describe
 the eno language.
 
-The technical specification write-up in ABNF notation is currently work in
-progress, in the meantime please gather further information from the the
-[website](https://eno-lang.org) and the terminology glossary, and feel free to
-open an issue here in the issue tracker if anything is unclear.
+Further information can be gathered from the resources on the [website](https://eno-lang.org),
+also feel free to open an issue here in the [issue tracker](https://github.com/eno-lang/eno/issues) if anything is unclear.
 
 ## Encoding
 
