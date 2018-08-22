@@ -1,0 +1,31 @@
+> An empty list
+my_list:
+
+
+> A list with a single value
+my_list:
+- my value
+
+
+> A list with two values
+my_list:
+- my value
+- my value
+
+
+my_list:
+
+> There can be comments and any number of empty lines between list items
+- my value
+
+- my value
+
+
+my_list:
+- my value
+> You can use line and newline continuations for list items just like with fields
+\ continued
+
+
+> Just for clarity, this is NOT a list, but a field with the value "- my value"
+NOT_a_list: - my value
