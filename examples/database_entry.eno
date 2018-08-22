@@ -1,0 +1,37 @@
+> Real usecase example from the file-based dérive (http://derive.at/) research database
+>
+> This specific record is from an archive collection documenting players in the
+> field of urban studies. There are simple fields for the name, place and
+> website, a list element with tags, and at the bottom two blocks that embed
+> longer text descriptions. The field names are german because the database
+> principally consists of german language content and is maintained by german
+> native speakers - eno allows working with documents that can be fully authored
+> in any language, as it allows the full unicode range in keys too.
+
+Name: WE THE PEOPLE OF DETROIT COMMUNITY RESEARCH COLLECTIVE
+Vorname:
+Nachname:
+Land: United States
+Stadt: Detroit
+
+Tags:
+- Detroit
+- Community
+- Research
+
+Website: https://wethepeopleofdetroit.com/
+Permalink: we-the-people-of-detroit-community-research-collective
+
+-- Biographie
+We the People of Detroit Community Research Collective (WTP CRC) is a
+collaboration between community activists, academics, researchers and designers.
+-- Biographie
+
+-- Text
+We the People of Detroit Community Research Collective (WTP CRC) is a
+collaboration between community activists, academics, researchers and designers.
+Our research is produced with and for the citizens of Detroit. This research has
+been used in a wide range of settings, from community organizing to legal and
+legislative work. We hope that our work will be of further use to Detroiters in
+their efforts to build a more democratic city.
+-- Text
