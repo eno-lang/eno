@@ -1,0 +1,1942 @@
+> Real usecase example taken from https://github.com/eno-lang/eno-lang.org/blob/master/src/docs/javascript.eno
+>
+> The generated webpage based on this content can be studied at:
+> https://eno-lang.org/javascript/
+>
+> This file stores the entire API documentation for enojs as a single eno document.
+> There is initially a 'title' and 'intro', followed by a section called 'Modules'.
+> Inside 'Modules' there is a section hierarchy going from module to method, and
+> further down to parameters and their options.
+>
+> A mix of fields, line continuations, fieldsets and blocks is used at the
+> bottom level to provide the actual parameter names, code snippets, description
+> texts and so on.
+
+title: enojs - The JavaScript eno library
+
+-- intro
+# <img class="logo" src="/javascript.svg" /> enojs 0.16.1
+
+> Everyone is welcome to improve this documentation by editing [javascript.eno](https://github.com/eno-lang/eno-lang.org/blob/master/src/docs/javascript.eno) and submitting a Pull Request!
+
+Installation from npm:
+
+```shell
+npm install enojs
+```
+
+## Getting started
+
+Create an eno document, for instance `intro.eno`:
+
+```eno
+Greeting: Hello World!
+```
+
+A minimal example to read this file with `enojs`:
+
+```js
+const eno = require('enojs');
+const fs = require('fs');
+
+const input = fs.readFileSync('intro.eno');
+
+const document = eno.parse(input);
+
+console.log( document.field('Greeting') );  // prints 'Hello World!'
+```
+
+## Interactive code demos
+
+A preview of the enojs demo page, featuring interactive code examples is online at:
+<https://eno-lang.org/demo/>
+
+## Links
+
+Package on npm - <https://npmjs.com/package/enojs/>  
+Repository on github - <https://github.com/eno-lang/enojs/> 
+-- intro
+
+# Modules
+
+## eno
+
+-- class description
+The main module. You'll be calling `parse` on this, and possibly supplying a custom
+locale (such as `'de'`, `'es'`, ...), reporter type (`'text'`, `'html'`, `'terminal'` are available)
+or source label (usually to have filename appear in error messages) to that call.
+-- class description
+
+### parse
+
+syntax:
+| parse(input) → Section
+| parse(input, options) → Section
+
+-- description
+Parse a string in eno notation.
+-- description
+
+-- eno
+color: blue
+-- eno
+
+-- js
+eno.parse(input);  // returns [object Section document elements=1]
+
+                                                   // Errors will be ...
+eno.parse(input, { locale: 'es' });                // In spanish - ¡hola!
+eno.parse(input, { reporter: 'html' });            // HTML for e.g. web integration
+eno.parse(input, { reporter: 'terminal' });        // Colored for terminal output
+eno.parse(input, { sourceLabel: 'my-file.eno' });  // Annotated with a label as context
+eno.parse(input, { zeroIndexing: true });          // Counting line and column numbers from 0
+-- js
+
+#### parameters
+
+input: A string containing text in eno notation.
+options:
+locale = A string specifying the code of the locale to use for error messages (e.g. `'de'`, `'es'`), by default `'en'`.
+reporter = One of `'text'`, `'html'`, `'terminal'`.
+source_label = A string that labels where the input comes from (e.g. a filename), this is included with error messages to help the user located the file.
+zeroIndexing = `true` or `false` (default), set `true` to display `0,1,2,..` line and column numbers in all error messages instead of the default `1,2,3,..` indexing.
+
+#### return value
+
+description: An `Section` representing the document.
+
+## loaders
+
+-- class description
+enojs provides a set of core loaders for important types that are available out
+of the box (in addition to the possiblity to define your own custom loaders,
+which can be passed as callbacks to all accessors).
+
+The loaders are exposed through the API as drop in replacements to the standard accessors:
+- `Field`
+  - `value()` => `[loaderName]()`
+- `Fieldset`
+  - `entry()` => `[loaderName]()`
+- `List`
+  - `items()` => `[loaderName]Items()`
+- `Section`
+  - `field()` => `[loaderName]()`
+  - `list()` => `[loaderName]List()`
+
+
+So for instance, instead of calling ...
+
+```js
+document.field('done', { required: true });  // returns 'yes'
+document.list('visitor_counts', { required: true });  // returns [ '476', '213', '330', ... ]
+```
+
+... you can just replace `field` or augment `list` with the loader name ...
+
+```js
+document.boolean('done', { required: true });  // returns true
+document.integerList('visitor_counts', { required: true });  // returns [ 476, 213, 330, ... ]
+```
+
+Here's another full example:
+
+```js
+const eno = require('enojs');
+const { loaders } = require('enojs');
+
+const doc = eno.parse(`
+  publish: yes
+  location: 36.987094, -25.091719
+  contact: contact@faulty
+`);
+
+doc.boolean('publish');
+  // returns true
+
+doc.latLng('location');
+  // returns {
+  //   lat:  36.987094,
+  //   lng: -25.091719
+  // }
+
+doc.email('contact');
+  // throws an error: 'contact' must contain a valid email address, for instance 'jane.doe@eno-lang.org'.
+```
+
+Note that some loaders only perform validation and return their input unaltered
+as string (e.g. `color`, `email`), while others both validate and transform the
+value into a new type (e.g. `float`, `boolean`) or even object (e.g. `latLng`).
+
+-- class description
+
+### boolean
+
+-- description
+Accepts `true`, `false`, `yes` and `no`, returns a `boolean` (or throws an error for invalid values).
+-- description
+
+syntax:
+| boolean() → boolean
+| booleanItems() → array
+| booleanList() → array
+
+-- eno
+enabled: true
+publish: no
+visible: not
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.boolean('enabled');  // returns true
+document.boolean('publish');  // returns false
+
+document.boolean('visible');
+  // throws an error: 'visible' must contain a boolean - allowed values are 'true', 'false', 'yes' and 'no'.
+-- js
+
+### color
+
+-- description
+Accepts values formatted as `#RRGGBB` or `#RGB` (case insensitive), returns the value unchanged (or throws an error for invalid values).
+-- description
+
+syntax:
+| color() → string
+| colorItems() → array
+| colorList() → array
+
+-- eno
+active: #F00
+hover: #ff0000
+focus: blue
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.color('active');  // returns '#F00'
+document.color('hover');  // returns '#ff0000'
+
+document.color('focus');
+  // throws an error: 'focus' must contain a color, for instance '#B6D918', '#fff' or '#01b'.
+-- js
+
+### commaSeparated
+
+-- description
+Splits a comma-separated listing (single line, think a list of tags e.g.) into an array and trims whitespace.
+-- description
+
+syntax:
+| commaSeparated() → array
+| commaSeparatedItems() → array
+| commaSeparatedList() → array
+
+-- eno
+Tags: Coffee, Desk, Flavor
+
+Categories:  Computing  ,  High performance  ,  Cluster
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.commaSeparated('Tags');  // returns ['Coffee', 'Desk', 'Flavor']
+document.commaSeparated('Categories');  // returns ['Computing', 'High performance', 'Cluster']
+-- js
+
+### date
+
+-- description
+Accepts `YYYY-MM-DD` and returns a JavaScript `Date` object (or throws an error for invalid values).
+-- description
+
+syntax:
+| date() → Date
+| dateItems() → array
+| dateList() → array
+
+-- eno
+start: 1992-12-01
+end: 1994-03-04
+invalid: 2018-03-14 13:10
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.date('start');  // returns [object Date]
+document.date('end');  // returns [object Date]
+
+document.date('invalid');
+  // throws an error: 'invalid' must contain a valid date, for instance '1993-11-18'.
+-- js
+
+### datetime
+
+-- description
+Accepts a subset of ISO 8601 date/time formats described in this W3C note: <https://www.w3.org/TR/NOTE-datetime>
+
+Returns a JavaScript `Date` object (or throws an error for invalid values).
+
+Some possible example values that match the format:
+- `1990`
+- `1990-12`
+- `1990-12-31`
+- `1990-12-31T23:59Z`
+- `1990-12-31T23:59:00+01:00`
+- `1990-12-31T23:59:00.999+01:00`
+
+Note that spaces as separators are not allowed.
+
+Development note:
+A more appealing, less technical datetime format or an additional loader to serve that requirement would be generally welcome,
+the current format is basically just an initial draft that should cover many usecases and is standardized through its
+ISO origin, feel free to get in touch and propose an extension/update if you'd be interested in such development.
+-- description
+
+syntax:
+| datetime() → Date
+| datetimeItems() → array
+| datetimeList() → array
+
+-- eno
+start: 1992-12-01
+end: 1994-03-04T13:14Z
+invalid: 2018-03-14 13:10
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.datetime('start');  // returns [object Date]
+document.datetime('end');  // returns [object Date]
+
+document.datetime('invalid');
+  // throws an error: 'invalid' must contain a valid date or date and time, for instance '1997-07-16' or '1994-11-05T13:15Z' (see https://www.w3.org/TR/NOTE-datetime).
+-- js
+
+### float
+
+-- description
+Accepts floats (decimal part can be missing though), returns a float (or throws an error for malformed values).
+-- description
+
+syntax:
+| float() → float
+| floatItems() → array
+| floatList() → array
+
+-- eno
+good: 49.9
+fine: -2
+bad: three
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.float('good');  // returns 49.9
+document.float('fine');  // returns -2.0
+
+document.float('bad');
+  // throws an error: 'bad' must contain a decimal number, for instance '13.0', '-9.159' or '42'.
+-- js
+
+### integer
+
+-- description
+Accepts integers only (float is not clipped but triggers an error), returns an integer.
+-- description
+
+syntax:
+| integer() → int
+| integerItems() → array
+| integerList() → array
+
+-- eno
+good: -13
+bad: 0.3
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.integer('good');  // returns -13
+
+document.integer('bad');
+  // throws an error: 'bad' must contain an integer, for instance '42' or '-21'.
+-- js
+
+### json
+
+-- description
+Parses the value as JSON and returns the result (or passes on the parser error for malformed JSON).
+-- description
+
+syntax:
+| json() → object/array/value
+| jsonItems() → array
+| jsonList() → array
+
+-- eno
+-- json payload
+{
+  "status": 500
+}
+-- json payload
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.json('json payload');  // returns { status: 500 }
+-- js
+
+### latLng
+
+-- description
+Accepts lat/lng coordinates of the form `dd.ddddd, dd.ddddd`, returns an object (see example below) (or throws an error for invalid values).
+-- description
+
+syntax:
+| latLng() → object
+| latLngItems() → array
+| latLngList() → array
+
+-- eno
+location: 36.987094, -25.091719
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.latLng('location');
+  // returns {
+  //   lat:  36.987094,
+  //   lng: -25.091719
+  // }
+-- js
+
+### number
+
+-- description
+An alias for the `integer` loader.
+-- description
+
+syntax:
+| number() → int
+| numberItems() → array
+| numberList() → array
+
+-- eno
+good: -13
+bad: 0.3
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.number('good');  // returns -13
+
+document.number('bad');
+  // throws an error: 'bad' must contain an integer, for instance '42' or '-21'.
+-- js
+
+### string
+
+-- description
+Technically not a loader, but an alias for the standard accessors (which always
+return strings), you can use it if you prefer a 100% type-oriented value access
+terminology in your code. Note that this is not even a noop function, but really
+just a direct alias, so using it instead of e.g. `field` does not incur any
+performance drawback.
+-- description
+
+syntax:
+| string() → string
+| stringItems() → array
+| stringList() → array
+
+-- eno
+name: Alice
+number: 13
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.string('name');  // returns 'Alice'
+document.string('number');  // returns '13'
+
+// .... these are completely identical to ...
+
+document.field('name');  // returns 'Alice'
+document.field('number');  // returns '13'
+-- js
+
+### url
+
+-- description
+Validates a URL and returns it unaltered (or throws an error for an invalid URL).
+-- description
+
+syntax:
+| url() → string
+| urlItems() → array
+| urlList() → array
+
+-- eno
+good: https://json.org
+bad: www.boom
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.url('good');  // returns 'https://json.org'
+
+document.url('bad');
+  // throws an error: 'bad' must contain valid URL, for instance 'https://eno-lang.org'.
+-- js
+
+## Section
+
+-- class description
+Every section in an eno document, such as for instance `# notes` or `### Appendix`, maps to a `Section`.
+More prominently though **the document itself is represented as a `Section`**,
+consequently this is the interface you'll be utilizing most for many usecases.
+-- class description
+
+### assertAllTouched
+
+syntax:
+| assertAllTouched()
+| assertAllTouched(options)
+| assertAllTouched(message, options)
+| assertAllTouched(messageFunction, options)
+
+-- description
+Assert that all elements of this section (and also, recursively, all
+subsections) that were present in the parsed eno document were also queried (and
+therefore *touched*) by the application. This, combined with eno's query
+methods, serves to ensure a two-way guarantee for both users and developers: No
+data that the application requires can be left out, and no data that the
+application does not process can be supplied.
+-- description
+
+-- eno
+Important data A: I need to be processed!
+Important data B: Me too!
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+const dataA = document.field('Important data A');
+
+// ... processing happens only for dataA
+
+document.assertAllTouched(); // throws an error with the default message
+
+document.assertAllTouched({ only: ['Important data A'] });  // passes
+document.assertAllTouched({ except: ['Important data B'] });  // passes
+
+document.assertAllTouched(({ name, value }) =>  // throws an error "Important data B is not ..."
+  `${name} is not supported by the application, please contact support if you think it should be`
+);
+-- js
+
+#### parameters
+
+-- message or messageFunction
+Optional, usually the default message (*An excess element named [NAME] was
+found, is it possibly a typo?*) will do fine. If you want to override it,
+provide either a static message as a string, or alternatively a function
+returning a string. (The function is passed `name` and `value` inside a single
+object parameter, although `value` can be `undefined` if the untouched element
+is a fieldset or section)
+-- message or messageFunction
+
+options:
+only = An array of strings, e.g. `['name', 'email']`, which specifies to only check these elements for whether they've been touched.
+except = An array of strings, e.g. `['phone number']`, which specifies to exclude these elements from checking whether they've been touched.
+
+### fieldsets
+
+syntax: fieldsets(name) → array
+
+-- description
+Retrieve fieldsets with the specified name from this current section.
+-- description
+
+-- eno
+image:
+src = red-roses.jpg
+
+image:
+src = white-roses.jpg
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+const images = document.fieldsets('image');
+
+images.forEach(image => {
+  console.log( image.entry('src') );
+});
+-- js
+
+#### parameters
+
+name: A string specifying the name of the fieldsets to retrieve.
+
+#### return value
+
+description: An array of `Fieldset`s.
+
+### fieldset
+
+syntax:
+| fieldset(name) → Fieldset or null
+| fieldset(name, options) → Fieldset or null
+
+-- description
+Retrieve a fieldset from the section, optionally supplying an options object.
+-- description
+
+-- eno
+color ratings:
+red = 5
+green = 7
+blue = 3
+-- eno
+
+-- js
+section.fieldset('color ratings');   // returns [object Fieldset name="color ratings" entries=3]
+section.fieldset('temperature ratings');   // throws an error
+
+section.fieldset('temperature ratings', { required: false });   // returns null
+section.fieldset('temperature ratings', { enforceElement: true });  // throws an error
+-- js
+
+#### parameters
+
+name: A string representing the name of the field to return.
+
+options:
+enforceElement = A boolean stating whether the fieldset must exist in the document. (defaults to `false`)
+required = Alias for `enforceElement` (this exists on many methods and depending on context refers to either element or value)
+
+#### return value
+
+description: An `Eno::Fieldset`, or `null`.
+
+### element
+
+syntax:
+| element(name) → element or null
+| element(name, options) → element or null
+
+-- description
+Retrieve a single element of any allowed type from the section by its name.
+Optionally specify whether it's optional or mandatory for the element to be
+present in the eno document (by default it's optional).
+-- description
+
+-- eno
+title: Artfest 2018
+tags:
+- art
+- code
+
+# content
+> ...
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.element('title');  // returns [object Field name="title" value="Artfest 2018"]
+document.element('tags');  // returns [object List name="tags" items=2]
+document.element('content');  // returns [object Section name="content" items=14]
+
+document.element('fantasy');  // returns null
+document.element('fantasy', { enforceElement: true });  // throws an error
+document.element('fantasy', { required: true });  // throws an error
+-- js
+
+#### parameters
+
+name: The name of the element to fetch from the section as a string.
+
+options:
+enforceElement = Whether the element must be present in the document (`true` or `false`, defaults to `false`)
+required = Alias for `enforceElement` (this exists on many methods and depending on context refers to either element or value)
+
+#### return value
+
+description: An element (e.g. `List`, `Field`, etc.) or `null`.
+
+### elements
+
+syntax: elements() → array
+
+-- description
+Retrieve the elements of this section in sequential order. This seamlessly lets you switch from
+associative readout to sequential readout, allowing sections within, or the whole document, to
+represent document-like structures (think generic markup) instead of just associative data stores.
+-- description
+
+-- eno
+date: 2018-03-01
+title: 'My blog post'
+
+# page
+
+h1: Hello world
+p: This is my first post, I'm so happy!
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+const metadata = {
+  date: document.field('date', myDateLoaderFunction),
+  title: document.field('title')
+};
+
+const html = '';
+
+for(let element of document.section('page').elements()) {
+  html += "<#{element.name}>#{element.value()}</#{element.name}>";
+}
+
+fs.writeFileSync('index.html', html);
+-- js
+
+#### return value
+
+description: An array containing the elements of this section.
+
+### enforceAllElements
+
+syntax:
+| enforceAllElements()
+| enforceAllElements(enforce)
+
+-- description
+Set the default for all following queries on this section of whether the
+presence of elements in the eno input text should be enforced (by default it is
+not). This can be used to prevent "template decay" - with presence enforcement
+enabled elements may be empty, but they (at least their declaration) must be
+there in the eno text and consequently they can not disappear from a template
+over time without triggering an error.
+-- description
+
+-- eno
+color: blue
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.field('sound');  // returns null
+
+document.enforceAllElements();
+
+document.field('sound');  // throws an error
+document.field('sound', { enforceElement: false });  // returns null
+-- js
+
+#### parameters
+
+enforce: An optional boolean indicating whether to enforce or not. (`true` is the default if left out)
+
+### field
+
+syntax:
+| field(name) → value or null
+| field(name, options) → object/value or null
+| field(name, loader) → value or null
+| field(name, loader, options) → object/value or null
+
+-- description
+Retrieve a field's value from the section, optionally supplying a loader to
+validate and/or transform the value, and/or an options object.
+-- description
+
+-- eno
+color: blue
+sound:
+-- eno
+
+-- js
+section.field('color');   // returns 'blue'
+section.field('sound');   // returns null
+
+section.field('sound', { required: true });   // throws an error
+section.field('sound', { enforceElement: true });   // returns null
+section.field('texture', { enforceElement: true });   // throws an error
+
+section.field('color', ({ value }) => value.toUpperCase());   // returns 'BLUE'
+
+section.field('color', ({ value }) => {   // throws an error
+  if(value !== 'green') {
+    throw 'Only green is allowed!';
+  }
+  return value;
+});
+
+section.field('color', { withElement: true });
+  // returns { element: [object Field name="blue" value="blue"], value: 'blue' }
+-- js
+
+#### parameters
+
+name: A string representing the name of the field to return.
+loader: A function returning the transformed/validated value or throwing an error.
+options:
+enforceElement = Whether the field must be present in the document (`true` or `false`, defaults to `false`)
+enforceValue = Whether there must be a value or the field is allowed to be empty (defaults to `false`)
+required = Alias for `enforceValue` (this exists on many methods and depending on context refers to either element or value)
+withElement = Whether to return an object of the form `{ element: ..., value: ... }` instead of just the value (default `false`)
+
+#### return value
+
+description:
+\ The value of the field, or `null` if empty, or an array of the form
+\ `{ element: ..., value: ... }` when the option `withElement` is specified.
+
+### fields
+
+syntax: fields(name) → array
+
+-- description
+Retrieve fields with the specified name from this current section.
+-- description
+
+-- eno
+color: blue
+color: red
+color: orange
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+const colors = document.fields('color');
+
+for(let color of colors) {
+  console.log( color.value() );
+}
+-- js
+
+#### parameters
+
+name: A string specifying the name of the fields to retrieve.
+
+#### return value
+
+description: An array of `Field`s.
+
+### list
+
+syntax:
+| list() → array
+| list(options) → array
+| list(loader) → array
+| list(loader, options) → array
+
+-- description
+Retrieve the items of a list, optionally supplying a loader and options.
+-- description
+
+-- eno
+colors:
+- pink
+- peach
+
+textures:
+-
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.list('colors');  // returns [ 'pink', 'peach' ]
+document.list('sounds');  // returns []
+
+document.list('textures');                            // throws an error
+document.list('textures', { enforceValues: false });  // returns [ null ]
+
+document.list('sounds', { required: true });        // throws an error
+document.list('sounds', { enforceElement: true });  // throws an error
+
+document.list('colors', ({ value }) => value.toUpperCase());   // returns [ 'PINK', 'PEACH' ]
+
+document.list('colors', ({ value }) => {   // throws an error
+  if(value === 'peach') {
+    throw 'Peach may not be on the list!';
+  }
+  return `I like ${value}`;
+});
+
+document.list('colors', { withElements: true });
+  // returns [{ element: [object Field value="pink"], value: 'pink' },
+  //          { element: [object Field value="pink"], value: 'peach' }]
+
+document.list('colors', { minCount: 3 });  // throws an error
+-- js
+
+#### parameters
+
+name: The name of the list to return as a string.
+
+loader:
+| A `function` returning the transformed/validated value or throwing an error.
+| (The function is applied to each list item on its own, being passed a single
+| object parameter with the keys `name` and `value`)
+
+options:
+enforceElement = Whether the list must be present in the document (defaults to `false`)
+enforceValues = Whether empty list items (`- ` in the document, mapping to `null`) are disallowed (defaults to `true`)
+exact_count = Validate that there are exactly `n` items in the list (takes a number, defaults to `null`)
+min_count = Validate that there are at least `n` items in the list (takes a number, defaults to `null`)
+max_count = Validate that there are at most `n` items in the list (takes a number, defaults to `null`)
+required = Alias for `enforceElement` (this exists on many methods and depending on context refers to either element or value)
+withElements = Whether to return an array of objects of the form `{ element: ..., value: ... }` instead of just the values (defaults to `false`)
+
+#### return value
+
+description:
+| The (optionally transformed/validated) values of the items of this list as an array.
+| With `withElements` set to `true` it returns an array of objects of the form `{ element: ..., value: ... }` instead.
+
+### lists
+
+syntax: lists(name) → array
+
+-- description
+Retrieve lists with the specified name from this current section.
+-- description
+
+-- eno
+route:
+- vienna
+- paris
+- rome
+
+route:
+- moscow
+- riga
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+const routes = document.lists('route');
+
+for(let route of routes) {
+  console.log( route.items() );
+}
+
+// prints ...
+// [ 'vienna', 'paris', 'rome']
+// [ 'moscow', 'riga' ]
+-- js
+
+#### parameters
+
+name: A string specifying the name of the lists to retrieve.
+
+#### return value
+
+description: An array of `List`s.
+
+### lookup
+
+syntax:
+| lookup(index) → object or null
+| lookup(line, column) → object or null
+
+-- description
+Ask the document *Hey what's at column X in line Y in my eno file?*. The lookup **always** returns an element for valid indices
+(the document/section in case of an empty line/space), only indices outside the range of the document return `null`. Note that
+all arguments are zero-indexed, i.e. the first lines and columns are numbered `0`, not `1`.
+-- description
+
+-- eno
+color: blue
+
+# notes
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.lookup(3);  // 'o'
+  // returns { element: [object Field name="color" value="blue"], zone: 'name' }
+document.lookup(7);  // 'b'
+  // returns { element: [object Field name="color" value="blue"], zone: 'value' }
+document.lookup(0, 3);  // 'o'
+  // returns { element: [object Field name="color" value="blue"], zone: 'name' }
+document.lookup(0, 7);  // 'b'
+  // returns { element: [object Field name="color" value="blue"], zone: 'value' }
+document.lookup(13);  // '#'
+  // returns { element: [object Section name="notes" elements=0], zone: 'sectionOperator' }
+document.lookup(19);  // 's'
+  // returns { element: [object Section name="notes" elements=0], zone: 'name' }
+document.lookup(2, 0);  // '#'
+  // returns { element: [object Section name="notes" elements=0], zone: 'sectionOperator' }
+document.lookup(2, 6);  // 's'
+  // returns { element: [object Section name="notes" elements=0], zone: 'name' }
+-- js
+
+#### parameters
+
+index: A one-dimensional index to look up (0-indexed, i.e. the first position is 0, not 1)- only applies when it's the only given argument.
+line: The line to look up (0-indexed, i.e. the first line is 0, not 1) - only applies when you supply a `column` as well.
+column: The column to look up (0-indexed, i.e. the first column is 0, not 1) - only applies when you supply a `line` as well.
+
+#### return value
+
+-- description
+For all valid indices within the document returns an object with two properties:  
+
+
+`zone`: A string denoting the token at the index, here's the full list:  
+
+`'[empty-lines-and-spaces-between-tokens]'` => `element`  
+`'[inside-blocks]'` => `content`  
+`'[inside-comments]'` => `comment`  
+`'[name]'` => `name`  
+`'[template]'` => `value`  
+`'[value]'` => `value`  
+`':'` => `nameOperator`  
+`'-'` => `itemOperator`  
+`'='` => `entryOperator`  
+`'--'` => `blockOperator`  
+`'>'` => `commentOperator`  
+``'`'`` => `escapeBeginOperator`  
+``'`'`` => `escapeEndOperator`  
+`'|'` => `newlineContinuationOperator`  
+`'\'` => `lineContinuationOperator`  
+`'#'` => `sectionOperator`  
+`'<'` => `copyOperator`  
+`'<<'` => `deepCopyOperator`  
+`element`: An `Section`, `Fieldset`, `Field`.. . For empty lines you get the containing section.
+
+When an index outside the document is supplied, `null` is returned.
+-- description
+
+### raw
+
+syntax: raw() → array
+
+-- description
+Retrieve a native javascript object representation of the section.
+-- description
+
+-- eno
+color: blue
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.raw();  // returns [{ color: 'blue' }]
+-- js
+
+#### return value
+
+description: An array of elements (also returned in their raw representation).
+
+### section
+
+syntax:
+| section(name) → Section or null
+| section(name, options) → Section or null
+
+-- description
+Retrieve the subsection with the specified name from this current section.
+-- description
+
+-- eno
+# content
+title: A Manifest
+
+# notes
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.section('content');   // returns [object Section name="content" elements=1]
+document.section('notes');     // returns [object Section name="notes" elements=0]
+document.section('metadata');  // throws an error
+
+document.section('metadata', { required: false });       // returns null
+document.section('notes', { enforceElement: true });     // returns [object Section name="notes" elements=0]
+document.section('metadata', { enforceElement: true });  // throws an error
+-- js
+
+#### parameters
+
+name: A string specifying the name of the section to retrieve.
+
+options:
+enforceElement = Whether the section must be present in the document (defaults to `false`)  
+required = Alias for `enforceElement` (this exists on many methods and depending on context refers to either element or value)
+
+
+#### return value
+
+description: An `Section`, or `null`.
+
+### sections
+
+syntax: sections(name) → array
+
+-- description
+Retrieve subsections with the specified name from this current section.
+-- description
+
+-- eno
+# Article
+> ...
+
+# Article
+> ...
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+const sections = document.sections('Article');
+
+for(let section of sections) {
+  // do something with each Article
+}
+-- js
+
+#### parameters
+
+name: A string specifying the name of the sections to retrieve.
+
+#### return value
+
+description: An array of `Section`s.
+
+## Field
+
+-- class description
+All values in an eno document, such as the value of a field like `name: value`, the value of a block,
+the value of a list item, the value of a fieldset entry, and so on, map to an `Field`. Usually you
+don't interact with this because you directly get the values from a section or fieldset in most cases.
+When you, for instance, sequentially iterate a section (with `Section`'s '`elements` method) or explicitly ask
+for the `Field` by using an accessor with the `{ withElement: true }` option (for delayed error triggering)
+you will get to interact with this class.
+-- class description
+
+### error
+
+syntax:
+| error() → ValidationError
+| error(message) → ValidationError
+| error(messageFunction) → ValidationError
+
+-- description
+Generate an error in the context of the element. The error includes a generic
+message by default, or a custom one if you supply it (which is the recommended
+practice). You can also pass a message function which (like the loader functions
+too) gets the name and value as arguments and returns a message string. This
+serves to create highly informative error messages that pin-point to the exact
+origin of the error, even when the initial reading of data is already past, e.g.
+when the error condition is only apparent later, when more processing has
+occurred or other data is available.
+-- description
+
+-- eno
+color: cozy
+-- eno
+
+-- js
+const document = eno.parse(input);
+const { element, value } = document.field('color', { withElement: true });
+
+// ...
+
+if(value === 'cozy') {
+  throw element.error('Postprocessing determined that "cozy" is not a color after all.');
+}
+-- js
+
+#### parameters
+
+message or messageFunction:
+| Highly recommended to provide one (but it's optional).
+|
+| Either directly pass a string, or alternatively a function returning a string.  
+| (The function is passed `name` and `value` inside a single object parameter.)
+
+#### return value
+
+description:
+| An `ValidationError` in the context of the element's value
+| (and with an optional custom message).
+
+### isEmpty
+
+syntax: isEmpty() → boolean
+
+-- description
+Query whether the value is empty (e.g. `comment:  ` in an eno document), which in javascript terms is equivalent of `null`.
+-- description
+
+#### return value
+
+description: `true` if empty, otherwise `false`.
+
+### raw
+
+syntax: raw() → object or value
+
+-- description
+Retrieve a native javascript object representation of the value.
+The raw representation differs depending on whether there is a name (e.g. for a field value),
+or not (applies only to list item values).
+-- description
+
+-- eno
+color: blue
+numbers:
+- 13
+- 42
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.element('color').raw();  // returns { color: 'blue' }
+
+const listItems = document.element('numbers').elements();
+listItems[0].raw();  // returns '13'
+-- js
+
+#### return value
+
+description: A native representation of the value element.
+
+### value
+
+syntax:
+| value() → value or null
+| value(options) → value or null
+| value(loader) → value or null
+| value(loader, options) → value or null
+
+-- description
+Retrieve the value of an `Field`, optionally passing it through a loader
+function and/or supplying options.
+-- description
+
+-- eno
+flag color: beige
+towel color:
+|
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+const flagColor = document.element('flag color');
+const towelColor = document.element('towel color');
+
+flagColor.value();  // returns 'beige'
+towelColor.value();  // returns null
+
+flagColor.value(({ value }) => value.replace('eig', 'lu'));  // returns 'blue'
+-- js
+
+#### parameters
+
+loader:
+| A function returning the transformed/validated value or throwing an error.  
+| The function is passed `name` and `value` inside a single object parameter.
+
+options:
+enforceValue = Whether there must be a value or the field is allowed to be empty (default to `false`)
+required = Alias for `enforceValue` (this exists on many methods and depending on context refers to either element or value)
+
+#### return value
+
+description: The (optionally transformed/validated) value of this `Field`.
+
+## List
+
+-- class description
+Lists such as the one below are represented as an `List`:
+
+```eno
+things:
+- toys
+- plants
+```
+
+Like `Field`, you will seldom interact with this class, and instead use the `list`
+accessor on the document or its sections to directly obtain the values of a list.
+-- class description
+
+### elements
+
+syntax: elements() → array
+
+-- description
+Retrieve the items of this list as `Field` elements (instead of
+their direct values) in sequential order.
+-- description
+
+-- eno
+numbers:
+- 6
+- 8
+- 19
+-- eno
+
+-- js
+const list = eno.parse(input).element('numbers');
+
+list.elements();
+  // returns [ [object Field value="6"], [object Field value="8"], [object Field value="19"] ]
+-- js
+
+#### return value
+
+description: An array containing the items of this list as `Field` elements.
+
+### items
+
+syntax:
+| items() → array
+| items(options) → array
+| items(loader) → array
+| items(loader, options) → array
+
+-- description
+Retrieve the items of the list, optionally passing them through a loader function.
+-- description
+
+-- eno
+colors:
+- pink
+- peach
+-- eno
+
+-- js
+const list = eno.parse(input).element('colors');
+
+list.items();  // returns ['pink', 'peach']
+list.items(({ value }) => `${value}!!`);  // returns ['pink!!', 'peach!!']
+-- js
+
+#### parameters
+
+loader:
+| A function returning the transformed/validated value or throwing an error.
+| (The `Proc` or block is applied to each list item on its own, being passed the arguments `name` and `value`)
+
+options:
+elements = Whether to return the elements (as `Field`) instead of the values of the list items. (defaults to `false`)
+enforceValues = Whether empty list items (`- ` in the document, mapping to `null`) are disallowed (defaults to `true`)
+withElements = Whether to return an array of objects of the form `{ element: ..., value: ... }` instead of just the values (defaults to `false`)
+
+
+#### return value
+
+description: The (optionally transformed/validated) items of this list as an array.
+
+### length
+
+syntax: length() → number
+
+-- description
+Returns the count of items in the list.
+-- description
+
+-- eno
+colors:
+- pink
+- peach
+-- eno
+
+-- js
+const list = eno.parse(input).element('colors');
+
+list.length();  // returns 2
+-- js
+
+#### return value
+
+description: The number of items in the list as a number.
+
+### raw
+
+syntax: raw() → object
+
+-- description
+Retrieve a native representation of the list.
+-- description
+
+-- eno
+colors:
+- pink
+- peach
+-- eno
+
+-- js
+const list = eno.parse(input).element('colors');
+
+list.raw();  // returns { colors: ['pink', 'peach'] }
+-- js
+
+#### return value
+
+description: A native javascript representation of the list.
+
+## Fieldset
+
+-- class description
+Fieldsets are represented as an `Fieldset`:
+
+```eno
+rated things:
+toys = 5 stars
+plants = 3 stars
+```
+
+You will mostly obtain an instance of this through the `fieldset` accessor on a document/section.
+-- class description
+
+### assertAllTouched
+
+syntax:
+| assertAllTouched()
+| assertAllTouched(options)
+| assertAllTouched(message, options)
+| assertAllTouched(messageFunction, options)
+
+-- description
+Assert that all entries of this fieldset that were present in the parsed eno document
+were also queried (and therefore *touched*) by the application. This, combined with eno's
+query methods, serves to ensure a two-way guarantee for both users and developers:
+No data that the application requires can be left out, and no data that the application
+does not process can be supplied.
+-- description
+
+-- eno
+Important data:
+A = I need to be processed!
+B = Me too!
+-- eno
+
+-- js
+const document = eno.parse(input);
+const fieldset = document.fieldset('Important data');
+
+const dataA = fieldset.entry('A');
+
+// ... processing happens only for dataA
+
+fieldset.assertAllTouched(); // throws an error
+
+fieldset.assertAllTouched({ only: ['A'] })  // passes
+fieldset.assertAllTouched({ except: ['B'] })  // passes
+
+fieldset.assertAllTouched(({ name, value }) =>  // throws an error "B is not ..."
+  `${name} is not supported by the application, please contact support if you think it should be`
+);
+-- js
+
+#### parameters
+
+-- message or messageFunction
+Optional, usually the default message (*An excess element named [NAME] was
+found, is it possibly a typo?*) will do fine. If you want to override it,
+provide either a static message as a string, or alternatively a function
+returning a string. (The function is passed `name` and `value` inside a single
+object parameter.)
+-- message or messageFunction
+
+options:
+only = An array of strings, e.g. `['name', 'email']`, which specifies to only check these elements for whether they've been touched.
+except = An array of strings, e.g. `['phone number']`, which specifies to exclude these elements from checking whether they've been touched.
+
+### element
+
+syntax:
+| element(name) → element or null
+| element(name, options) → element or null
+
+-- description
+Retrieve a single entry as `Field` (instead of
+its direct value) from the fieldset by its name.
+Optionally specify whether it's optional or mandatory for the entry to be
+present in the eno document (by default it's optional).
+-- description
+
+-- eno
+years:
+2007 = Year of the gooseberry
+2010 = Year of the awesome beanstalk
+2011 = Year of yearning
+-- eno
+
+-- js
+const fieldset = eno.parse(input).fieldset('years');
+
+fieldset.element('2010');  // returns [object Field name="2010" value="Year of the awesome beanstalk"]
+fieldset.element('2020');  // returns null
+fieldset.element('2020', enforceElement: true);  // raises an error
+fieldset.element('2020', required: true);  // raises an error
+-- js
+
+#### parameters
+
+name: The name of the entry to fetch from the fieldset as a string.
+
+options:
+enforceElement = Whether the element must be present in the document (`true` or `false`, defaults to `false`)
+required = Alias for `enforceElement` (this exists on many methods and depending on context refers to either element or value)
+
+#### return value
+
+description: An element (e.g. `Field`, `List`, etc.) or `null`.
+
+### elements
+
+syntax: elements() → array
+
+-- description
+Retrieve the elements of this section in sequential order. This seamlessly lets you switch from
+associative readout to sequential readout, allowing sections within, or the whole document, to
+represent document-like structures (think generic markup) instead of just associative data stores.
+-- description
+
+-- eno
+date: 2018-03-01
+title: 'My blog post'
+
+# page
+
+h1: Hello world
+p: This is my first post, I'm so happy!
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+metadata = {
+  date: document.field('date', myDateLoaderFunction),
+  title: document.field('title')
+};
+
+html = '';
+
+for(let element of document.section('page').elements) {
+  html += "<#{element.name}>#{element.value}</#{element.name}>";
+}
+
+fs.writeFileSync('index.html', html);
+-- js
+
+#### return value
+
+description: An array containing the elements of this section.
+
+### enforceAllElements
+
+syntax:
+| enforceAllElements()
+| enforceAllElements(enforce)
+
+-- description
+Set the default for all following queries on this fieldset of whether the
+presence of elements in the eno input text should be enforced (by default it is
+not). This can be used to prevent "template decay" - with presence enforcement
+enabled entries may be empty, but they (at least their declaration) must be
+there in the eno document and consequently they can not disappear from a
+template at any point without triggering an error.
+-- description
+
+-- eno
+conversions:
+0001 = 1
+0010 = 2
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+const conversions = document.fieldset('conversions');
+
+conversions.enforceAllElements();
+
+conversions.entry('0011');  // throws an error
+conversions.entry('0011', { enforceElement: false });  // returns null
+-- js
+
+#### parameters
+
+enforce: An optional boolean indicating whether to enforce or not. (otherwise `true` is assumed)
+
+### entry
+
+syntax:
+| entry(name) → value or null
+| entry(name, options) → object/value or null
+| entry(name, loader) → value or null
+| entry(name, loader, options) → object/value or null
+
+-- description
+Retrieve an entry's value from the fieldset, optionally supplying a loader to
+validate and/or transform the value, and/or an options object.
+-- description
+
+-- eno
+Q&A:
+Meaning = 42
+Green = Yes
+Purpose =
+-- eno
+
+-- js
+const document = eno.parse(input);
+const qa = document.fieldset('Q&A');
+
+qa.entry('Meaning');   // returns '42'
+qa.entry('Purpose');   // returns null
+
+qa.entry('Purpose', { required: true });   // throws an error
+qa.entry('Purpose', { enforceElement: true });   // returns null
+qa.entry('Beige', { enforceElement: true });   // throws an error
+
+qa.entry('Green', ({ value }) => value.toUpperCase());   // returns 'YES'
+
+qa.entry('Meaning', ({ value }) => {   // throws an error
+  if(value === '42') {
+    throw "That one's getting old!";
+  }
+  return value;
+});
+
+qa.entry('Meaning', { withElement: true });
+  // returns { element: [object Field name="Meaning" value="42"], value: '42' }
+-- js
+
+#### parameters
+
+name: The name of the entry as a string.
+
+loader:
+| A function returning the transformed/validated value or throwing an error.  
+| The function is passed `name` and `value` inside a single object parameter.
+
+options:
+enforceElement = Whether the entry must be present in the document (`true` or `false`, defaults to `false`)
+enforceValue = Whether there must be a value or the entry is allowed to be empty (default to `false`)
+required = Alias for `enforceValue` (this exists on many methods and depending on context refers to either element or value)
+withElement = Whether to return an array with both the element and the value (defaults to `false`)
+
+#### return value
+
+description: The entry's value, or `null` if empty.
+
+### raw
+
+syntax: raw() → object
+
+-- description
+Retrieve a native representation of the fieldset.
+-- description
+
+-- eno
+weights:
+apple = 100g
+pineapple = 800g
+-- eno
+
+-- js
+const document = eno.parse(input);
+
+document.fieldset('weights').raw();
+  // returns { weights: [{ apple: '100g' }, { pineapple: '800g' }] }
+-- js
+
+#### return value
+
+description: A native object representation of the fieldset.
+
+## Empty
+
+-- class description
+This represents empty elements such as `color:`, where it is not clear if it is an empty field, list, or fieldset.
+-- class description
+
+### error
+
+syntax:
+| error() → ValidationError
+| error(message) → ValidationError
+| error(messageFunction) → ValidationError
+
+-- description
+Generate an error in the context of the element. The error includes a generic
+message by default, or a custom one if you supply it (which is the recommended
+practice). You can also pass a message function which (like the loader functions
+too) gets the name and value as arguments and returns a message string. This
+serves to create highly informative error messages that pin-point to the exact
+origin of the error, even when the initial reading of data is already past, e.g.
+when the error condition is only apparent later, when more processing has
+occurred or other data is available.
+-- description
+
+-- eno
+color:
+-- eno
+
+-- js
+const document = eno.parse(input);
+const { element, value } = document.field('color', { withElement: true });
+
+// ...
+
+if(value === null) {
+  throw element.error('Postprocessing determined that this value needs to be provided.');
+}
+-- js
+
+#### parameters
+
+message or messageFunction:
+| Highly recommended to provide one (but it's optional).
+|
+| Either directly pass a string, or alternatively a function returning a string.  
+| (The function is passed `name` and `value` inside a single object parameter.)
+
+#### return value
+
+description:
+| An `ValidationError` in the context of the element's value
+| (and with an optional custom message).
+
+### raw
+
+syntax: raw() → object
+
+-- description
+Retrieve a native representation of the empty element.
+-- description
+
+-- eno
+color:
+-- eno
+
+-- js
+const empty = eno.parse(input).element('color');
+
+empty.raw();  // returns { color: null }
+-- js
+
+#### return value
+
+description: A native representation of the empty element.
+
+### value
+
+syntax:
+| value() → null
+
+-- description
+Retrieve the value (always returns `null`).
+-- description
+
+-- eno
+note:
+-- eno
+
+-- js
+const empty = eno.parse(input).element('note');
+
+empty.value();  // returns null
+-- js
+
+#### return value
+
+description: Always `null`.
+
+## EnoError
+
+-- class description
+The single generic error interface for all (user) errors that eno generates.
+Note that this is never thrown by itself, but only in one of it's subclassed
+variants (`ParseError` and `ValidationError`). However, you can still
+utilize this generic class in cases where you want to catch both parser and
+validation errors indiscriminately, like so:
+
+```js
+try {
+  // ...
+} catch(err) {
+  if(err instanceof EnoError) { // catches both ParseError and ValidationError
+    // ...
+  }
+}
+```
+-- class description
+
+### cursor
+
+syntax: cursor → [line, column]
+
+-- description
+Returns a cursor position as an array of the form [line, column], indicating
+where a cursor should be placed if an application wants to offer the user a way
+to move the cursor straight to the error location.
+-- description
+
+-- js
+try {
+  // ...
+} catch(err) {
+  if(err instanceof EnoError) {
+    err.cursor;  // returns [3, 14]
+  }
+}
+-- js
+
+#### return value
+
+description: An array, where [0] is the line number, and [1] is the column number.
+
+### selection
+
+syntax: selection → [[line, column], [line, column]]
+
+-- description
+Returns a selection as an array of the form [[line, column], [line, column]],
+indicating a text range to select if an application wants to offer the user a
+way to get a selection for the error in the input.
+-- description
+
+-- js
+try {
+  // ...
+} catch(err) {
+  if(err instanceof EnoError) {
+    err.selection;  // returns [[3, 14], [3, 23]]
+  }
+}
+-- js
+
+#### return value
+
+description:
+| An array, where [0] is the begin of the selection and [1] is the end,
+| and both begin and end are each again an array, where [0] is the
+| line number, and [1] is the column number.
+
+### message
+
+syntax: message → string
+
+-- description
+Contains both the error text as well as the snippet. This is also what you
+get in the console when you don't catch the error.
+-- description
+
+-- js
+try {
+  // ...
+} catch(err) {
+  if(err instanceof EnoError) {
+    err.message;  // returns "In line 4 'a' is copied into itself.\n\n   Line | Content\n ..."
+  }
+}
+-- js
+
+#### return value
+
+description: Both the error text as well as the snippet.
+
+### snippet
+
+syntax: snippet → string
+
+-- description
+Returns a formatted excerpt of those passage(s) from the input where the error occurred.
+-- description
+
+-- js
+try {
+  // ...
+} catch(err) {
+  if(err instanceof EnoError) {
+    err.snippet;
+    
+    // returns something like ...
+    //
+    //   Line | Content
+    //      1 | 
+    // *    2 |     # a
+    // *    3 |     ## b
+    // >    4 |     ### c < a
+    //      5 |
+  }
+}
+-- js
+
+#### return value
+
+description: A formatted excerpt of those passage(s) from the input where the error occurred.
+
+### text
+
+syntax: text → string
+
+-- description
+Returns a one-liner that describes the error in human language.
+-- description
+
+-- js
+try {
+  // ...
+} catch(err) {
+  if(err instanceof EnoError) {
+    err.message;  // returns 'In line 4 'a' is copied into itself.'
+  }
+}
+-- js
+
+#### return value
+
+description: A single sentence that describes the error in human language.
+
+## ParseError
+
+-- class description
+When this is thrown, it indicates an error regarding syntax or grammatical semantics of the document.
+Functionally this behaves exactly like `EnoError`, therefore the interface methods are not repeated here and can
+be looked up on the `EnoError` documentation.
+-- class description
+
+## ValidationError
+
+-- class description
+When this is thrown, it indicates an error regarding application-specific requirements for the document.
+Functionally this behaves exactly like `EnoError`, therefore the interface methods are not repeated here and can
+be looked up on the `EnoError` documentation.
+-- class description

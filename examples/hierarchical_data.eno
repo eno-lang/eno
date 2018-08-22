@@ -1,0 +1,58 @@
+> Real usecase example from https://github.com/eno-lang/benchmarks/blob/master/reports/javascript.eno
+>
+> The rendered markdown report generated on the basis of this data can be studied at:
+> https://github.com/eno-lang/benchmarks/blob/master/README.md
+> 
+> This (generated) file just stores a simple hierarchy with numerical data,
+> there is a top-level section 'javascript' with some metadata
+> ('iterations', 'evaluated'), as well as a number of subsections,
+> whose names ('abstract_hierarchy', ...) identify the respective
+> benchmark scenario and contain a mapping between library name
+> and measured time, represented as fields.
+
+# javascript
+
+iterations: 100000
+evaluated: Fri Jul 06 2018 09:46:48 GMT+0200 (Central European Summer Time)
+
+## abstract_hierarchy
+
+enojs 0.13.1: 1.5550807799994946
+js-yaml 3.12.0: 1.694576124000363
+toml 2.3.3: 65.55331487999298
+toml-j0.4 1.1.1: 6.312734825999476
+
+## content_heavy
+
+enojs 0.13.1: 0.9270273759998381
+js-yaml 3.12.0: 7.022947545999661
+toml 2.3.3: 7908.529771699942
+toml-j0.4 1.1.1: 322.25691260000696
+
+## invented_server_configuration
+
+enojs 0.13.1: 2.3261210409998894
+js-yaml 3.12.0: 1.6458558410005644
+toml 2.3.3: 100.17921198000201
+toml-j0.4 1.1.1: 9.905643093000165
+
+## jekyll_post_example
+
+enojs 0.13.1: 0.8634771769996733
+js-yaml 3.12.0: 0.8431343219997361
+toml 2.3.3: 150.86338325999677
+toml-j0.4 1.1.1: 11.36234141800087
+
+## journey_route_data
+
+enojs 0.13.1: 3.548835017999634
+js-yaml 3.12.0: 3.791881393999793
+toml 2.3.3: 100.99689596000127
+toml-j0.4 1.1.1: 15.330702254999428
+
+## yaml_invoice_example
+
+enojs 0.13.1: 3.9504174440000206
+js-yaml 3.12.0: 2.61872482699994
+toml 2.3.3: 55.12786359500047
+toml-j0.4 1.1.1: 12.161507735999301
