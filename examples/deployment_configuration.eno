@@ -1,0 +1,32 @@
+> Real usecase example from an automated publishing system (anonymized)
+>
+> This configuration file specifies a `defaults` section
+> which holds a 'host' and 'user' field. The 'defaults' are
+> copied into the actual deployment configuration entries,
+> so they don't need to be repeated, while still remaining
+> customizable for single entries too.
+
+# defaults
+host: x71947-ssh.services.example-host.com
+user: x71947
+
+# backup.example.com < defaults
+directory: /data/web/x71947/html/backup.example.com
+
+# city.example-event.com < defaults
+directory: /data/web/x71947/html/city.example-event.com
+
+# example.com < defaults
+directory: /data/web/x71947/html/example.com
+
+# staging.example.com < defaults
+directory: /data/web/x71947/html/staging.example.com
+
+# staging.example-event.com < defaults
+directory: /data/web/x71947/html/staging.example-event.com
+
+# staging.city.example-event.com < defaults
+directory: /data/web/x71947/html/staging.city.example-event.com
+
+# example-event.com < defaults
+directory: /data/web/x71947/html/example-event.com
