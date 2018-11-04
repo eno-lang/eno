@@ -163,7 +163,7 @@ The `|` character when it appears as the first non-whitespace character on a lin
 
 ## Operator
 
-Any of `>`, `<`, `<<`, `:`, `=`, `-`, `--`, `#`, `|`, `\`, ``` when they appear outside of a `Name` or `Value`.
+Any of `>`, `<`, `<<`, `:`, `=`, `-`, `--`, `#`, `|`, `\`, `` ` `` when they appear outside of a `Name` or `Value`.
 
 ## Section
 
