@@ -5,7 +5,7 @@
 ;; *************************************
 
 
-document = instruction *( newline instruction )
+document = instruction *( 1*newline instruction )
 
 
 ;; Whitespace
@@ -27,9 +27,18 @@ LF = U+000A  ; "\n" (Line feed)
 CR = U+000D  ; "\r" (Carriage return)
 
 
+;; Element
+
+instruction = trimmed-instruction / block-text
+
+trimmed-instruction = [ignored-whitespace] ( comment / fieldset-entry / name-instruction
+						/ line-continuation / list-item / block-instruction )
+						[ignored-whitespace]
+
+
 ;; Comment
 
-comment = comment-operator ignored-whitespace optional-token ignored-whitespace
+comment = comment-operator [ ( [ignored-whitespace] value ) ]
 
 comment-operator = GREATER-THAN-SIGN
 
@@ -38,7 +47,8 @@ GREATER-THAN-SIGN = U+003E  ; ">"
 
 ;; Fieldset entry
 
-fieldset-entry = unescaped-name fieldset-entry-operator value
+fieldset-entry = name [ignored-whitespace]
+							fieldset-entry-operator [ignored-whitespace] value
 
 fieldset-entry-operator = EQUALS-SIGN
 
@@ -47,12 +57,17 @@ EQUALS-SIGN = U+003D  ; "="
 
 ;; Name
 
-name-instruction = name name-operator
+name-instruction = name ( original-declaration / template-declaration )
+
+original-declaration = [ignored-whitespace] name-operator [ ( [ignored-whitespace] value ) ]
+
+template-declaration = ignored-whitespace template-instruction
 
 name = escaped-name / unescaped-name
 
-escaped-name = ignored-whitespace 1*BACKTICK ignored-whitespace required-token ignored-whitespace 1*BACKTICK ignored-whitespace  ; Note: The number of backticks at the start and end must be the same
-unescaped-name = ignored-whitespace required-token ignored-whitespace
+escaped-name = 1*BACKTICK [ignored-whitespace] required-token [ignored-whitespace] 1*BACKTICK  ; Note: The number of backticks at the start and end must be the same
+
+unescaped-name = required-token
 
 name-operator = COLON
 
@@ -62,7 +77,8 @@ COLON = U+003A     ; ":"
 
 ;; Line continuation
 
-line-continuation = ( line-continuation-operator / newline-continuation-operator ) value
+line-continuation = ( line-continuation-operator / newline-continuation-operator )
+								[ ( [ignored-whitespace] value ) ]
 
 newline-continuation-operator = VERTICAL-BAR
 line-continuation-operator = BACKSLASH
@@ -73,7 +89,7 @@ BACKSLASH    = U+005C  ; "\"
 
 ;; List item
 
-list-item = list-item-operator value
+list-item = list-item-operator [ignored-whitespace] value
 
 list-item-operator = DASH
 
@@ -82,7 +98,7 @@ DASH = U+002D  ; "-"
 
 ;; Section
 
-section = section-operator TODO
+section = section-operator [ignored-whitespace] name [ template-instruction ]
 
 section-operator = 1*HASH
 
@@ -100,4 +116,48 @@ non-eol =/ %x20-10FFFF
 
 ;; Value
 
-value = ignored-whitespace optional-token ignored-whitespace
+value = optional-token
+
+
+;; Template
+
+template-instruction = template-operator [ignored-whitespace] name
+
+template-operator = ( copy-operator / deep-copy-operator )
+
+copy-operator = LESS-THAN-SIGN
+
+deep-copy-operator = 2( copy-operator )
+
+LESS-THAN-SIGN = U+003C ; "<"
+
+
+;; Block
+
+block-instruction = 2*block-operator [ignored-whitespace] name
+
+block-text = [retained-whitespace] value
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
