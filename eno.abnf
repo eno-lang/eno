@@ -13,7 +13,7 @@ document = instruction *( 1*newline instruction )
 ignored-whitespace = whitespace
 retained-whitespace = whitespace
 
-whitespace = *( SP / HTAB )
+whitespace = 1*( SP / HTAB )
 
 SP   = U+0020  ; " " (Space)
 HTAB = U+0009  ; "  " (Horizontal tab)
@@ -31,9 +31,14 @@ CR = U+000D  ; "\r" (Carriage return)
 
 instruction = trimmed-instruction / block-text
 
-trimmed-instruction = [ignored-whitespace] ( comment / fieldset-entry / name-instruction
-						/ line-continuation / list-item / block-instruction )
-						[ignored-whitespace]
+trimmed-instruction = [ignored-whitespace] instruction-body [ignored-whitespace]
+
+instruction-body =  comment
+instruction-body =/ fieldset-entry
+instruction-body =/ name-instruction
+instruction-body =/ line-continuation
+instruction-body =/ list-item
+instruction-body =/ block-instruction
 
 
 ;; Comment
@@ -48,7 +53,7 @@ GREATER-THAN-SIGN = U+003E  ; ">"
 ;; Fieldset entry
 
 fieldset-entry = name [ignored-whitespace]
-							fieldset-entry-operator [ignored-whitespace] value
+              fieldset-entry-operator [ignored-whitespace] value
 
 fieldset-entry-operator = EQUALS-SIGN
 
@@ -78,7 +83,7 @@ COLON = U+003A     ; ":"
 ;; Line continuation
 
 line-continuation = ( line-continuation-operator / newline-continuation-operator )
-								[ ( [ignored-whitespace] value ) ]
+                    [ ( [ignored-whitespace] value ) ]
 
 newline-continuation-operator = VERTICAL-BAR
 line-continuation-operator = BACKSLASH
@@ -98,7 +103,7 @@ DASH = U+002D  ; "-"
 
 ;; Section
 
-section = section-operator [ignored-whitespace] name [ template-instruction ]
+section = section-operator [ignored-whitespace] name [ignored-whitespace] [template-instruction]
 
 section-operator = 1*HASH
 
@@ -121,21 +126,19 @@ value = optional-token
 
 ;; Template
 
-template-instruction = template-operator [ignored-whitespace] name
-
-template-operator = ( copy-operator / deep-copy-operator )
+template-instruction = ( copy-operator / deep-copy-operator ) [ignored-whitespace] name
 
 copy-operator = LESS-THAN-SIGN
 
-deep-copy-operator = 2( copy-operator )
+deep-copy-operator = 2( LESS-THAN-SIGN )
 
 LESS-THAN-SIGN = U+003C ; "<"
 
 
 ;; Block
 
-block-instruction = 2*block-operator [ignored-whitespace] name
+block-instruction = block-operator [ignored-whitespace] name
+
+block-operator = 2*DASH
 
 block-text = [retained-whitespace] value
-
-
