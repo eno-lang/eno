@@ -52,3 +52,5 @@ and is fully supported by all library implementations it will consequently be
 frozen and locked, with no further changes planned nor allowed from that point
 on, or in other words, eno *1.0.0 Final* (or whatever the name then) will be the next and last iteration
 of the language.
+
+`rfcs-final-spec/` contains RFC documents for the next (final) iteration of the language, see its readme for more information.
