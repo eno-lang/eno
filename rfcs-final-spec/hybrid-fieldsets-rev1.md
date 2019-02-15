@@ -53,18 +53,28 @@ Bob = Not much!
   foo = bar
   number = one
 
-  > can be thought of as JSON: { "color": ["red", "green"], "foo": "bar", "number": "one"  }
-
   settings_2 < settings
   color = blue
   number = two
   number = three
-
-  > this results in: { "color": "blue", "foo": "bar", "number": ["two", "three"]  }
-
-  > Note that this consideration might be more hypothetical than relevant for actual plausible usecases though
   ```
+
+  `color` and `number` from `settings` are discarded, resulting in this resolved fieldset:
+
+  ```eno
+  settings_2:
+  color = blue
+  foo = bar
+  number = two
+  number = three
+  ```
+  (Note that this consideration might be more hypothetical than relevant for actual usecases though)
 
 ## Usecases wanted!
 
 Whether to write and publish this RFC was not an easy decision, there seems to be fairly balanced reasoning for both adopting and not adopting it, so seeing plausible usecases that justify its adoption would help greatly in making the final decision. Please open an issue if you've encountered scenarios that would benefit from this change if you'd like to help out, thanks!
+
+
+## Revision history
+
+**rev1:** Replaced the JSON metaphors explaining the merging behavior with actual eno notation to avoid misunderstandings.
