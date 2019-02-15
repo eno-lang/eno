@@ -35,7 +35,7 @@ my_field: my value
 \         continued with gap
 ```
 
-## Design Notes
+## Design considerations
 
 **Considerations around conveying meaning through document structure**
 
@@ -96,3 +96,57 @@ my_key:
 | jtLbcQFULKUtmpYCbRAwSEVqZuzoXdWCaTfDUXhPInlsHliQAOkTvcGkVvr
 | xtHYYVBMfYsKdhyBAdyyiwdttoyLBUzwZLSNYnwPhkSYdaVUPldOwzeygiA
 ```
+
+## Continuation behavior details
+
+There are some not so obvious scenarios and edge cases to consider here - the 4 following examples should completely cover these ambiguities. If you spot an oversight or something is yet unclear you're very welcome to open an issue to bring it up - thank you!
+
+**1. There is no leading/trailing spacing**
+
+```eno
+field:
+\
+\ value
+\
+
+> results in 'value' (leading/trailing spacing is discarded)
+```
+
+**2. The spacing produced by spaced line continuations does not accumulate**
+
+```eno
+field:
+\ value
+\
+\
+\ continued
+
+> results in 'value continued' (*one* separating space only)
+```
+
+**3. Empty spaced line continuations between direct line continuations are taken into account**
+
+```eno
+field:
+| value
+\
+| continued
+
+> results in 'value continued'
+```
+
+**4. Multiple empty spaced line continuation between direct line continuations do not accumulate**
+
+```eno
+field:
+| value
+\
+\
+| continued
+
+> results in 'value continued' (*one* separating space only)
+```
+
+## Revision history
+
+**rev1:** Added a section to clarify continuation behavior details and edge case scenarios
