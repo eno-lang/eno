@@ -1,4 +1,4 @@
-# RFC: Restrict fields to a single line
+# RFC: Restrict fields to a single line (revision 1)
 
 This RFC seeks to establish that regular `Field` elements can never contain line breaks (`\n`) by repurposing the current newline continuation operator for new functionality.
 

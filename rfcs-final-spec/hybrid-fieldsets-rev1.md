@@ -1,4 +1,4 @@
-# RFC: Hybrid fieldsets
+# RFC: Hybrid fieldsets (revision 1)
 
 This RFC proposes adopting the hybrid usage concept found in sections for fieldsets, allowing them to be used both as simple key-value stores (think attributes of an XML tag, this is already the current fieldset specification) and additionally also as an ordered document structure (think XML tags, consecutive elements whose names can reappear, to store e.g. chronological key-value data).
 
