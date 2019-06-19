@@ -6,9 +6,6 @@ language](https://eno-lang.org).
 `DETAILS.md` contains a work in progress write-up of the more intricate details
 of the eno language specification (those more relevant to implementing than to using it).
 
-`TERMINOLOGY.md` contains a glossary with all terms that are used to describe
-the eno language.
-
 Further information can be gathered from the resources on the [website](https://eno-lang.org),
 also feel free to open an issue here in the [issue tracker](https://github.com/eno-lang/eno/issues) if anything is unclear.
 
