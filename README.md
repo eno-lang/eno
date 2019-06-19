@@ -3,10 +3,6 @@
 This repository contains the specification documents for the [eno notation
 language](https://eno-lang.org).
 
-`examples/reference` contains eno documents that explain the language through numerous inline documented artificial usage examples.
-
-`examples/` also contains different real world usecase examples collected from various sources, these include brief explanations at the top of the files but have otherwise been kept unaltered (no inline comments added).
-
 `DETAILS.md` contains a work in progress write-up of the more intricate details
 of the eno language specification (those more relevant to implementing than to using it).
 
