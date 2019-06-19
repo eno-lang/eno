@@ -1,9 +1,7 @@
 # Language specification details
 
 This is a work in progress draft for providing eno's specification details in a
-textual form, especially the parts that can not adequately be described in the
-formal abnf document which is also currently being worked on in
-this repository.
+textual form.
 
 ## Ordering
 
@@ -13,7 +11,7 @@ whether they conceptually represent key-value structures or key-less lists.
 ## Types
 
 In eno there is no type differentiation on the language level, there are only
-textual representations ("strings"), which are always referred to as *values*. 
+textual representations ("strings"), which are always referred to as *values*.
 
 ## Application types
 
@@ -63,7 +61,7 @@ my_field: my_value
 |
 
 > "my_value"
-my_field: 
+my_field:
 | my_value
 
 > "my_value"
@@ -79,7 +77,7 @@ my_field: my_value
 
 > "my_value\n\ncontinued"
 > (two newlines, both continuations contribute here)
-my_field: 
+my_field:
 | my_value
 |
 |
