@@ -12,8 +12,6 @@ of the eno language specification (those more relevant to implementing than to u
 
 `eno.abnf` contains a work in progress formal description of eno's grammar in ABNF notation.
 
-`FAQ.md` contains mixed language details in Q&A format.
-
 `TERMINOLOGY.md` contains a glossary with all terms that are used to describe
 the eno language.
 
