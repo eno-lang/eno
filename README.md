@@ -3,7 +3,7 @@
 This is the initial language development repository for the *eno notation
 language*.
 
-**In the meantime almost all resources have migrated to [eno-lang.org](eno-lang.org) where they are available in a more accessible and interactive way (live document editor, live examples, etc.).**
+**In the meantime almost all resources have migrated to [eno-lang.org](https://eno-lang.org) where they are available in a more accessible and interactive way (live document editor, live examples, etc.).**
 
 You are still welcome to open an issue here in the [issue tracker](https://github.com/eno-lang/eno/issues) if you have questions or want to help.
 
