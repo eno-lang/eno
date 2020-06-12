@@ -1,16 +1,10 @@
-# eno
+# Eno
 
-This is the initial language development repository for the *eno notation
-language*.
+This is the original language development repository for the eno notation language.
 
-**In the meantime almost all resources have migrated to [eno-lang.org](https://eno-lang.org) where they are available in a more accessible and interactive way (live document editor, live examples, etc.).**
+**Most resources originally developed here have now been migrated to the [guide](https://eno-lang.org/guide/) and [specification](https://eno-lang.org/specification/) on [eno-lang.org](https://eno-lang.org), where they are available in a more accessible and interactive way (live document editor, live examples, etc.).**
 
-You are still welcome to open an issue here in the [issue tracker](https://github.com/eno-lang/eno/issues) if you have questions or want to help.
+The one remaining thing still happening in this repository is the development and
+publication of RFCs pertaining to the last remaining, not yet fully specified features of Eno (about 5%) - take a look at the `rfcs-final-spec/` directory for those.
 
-What has not been migrated to eno-lang.org and is still maintained here:
-
-- `DETAILS.md`, which contains a work in progress write-up of the more intricate
-details of the eno language specification (those more relevant to implementing
-than to using it).
-
-- `rfcs-final-spec/` - The RFC documents for the final specification of eno.
+Feel free to open an issue if you have a question, feedback on an RFC or want to help out with something.
