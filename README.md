@@ -2,9 +2,15 @@
 
 This is the original language development repository for the eno notation language.
 
-**Most resources originally developed here have now been migrated to the [guide](https://eno-lang.org/guide/) and [specification](https://eno-lang.org/specification/) on [eno-lang.org](https://eno-lang.org), where they are available in a more accessible and interactive way (live document editor, live examples, etc.).**
+**Most resources originally developed here have now been migrated to the [guide](https://eno-lang.org/guide/) and [specification](https://eno-lang.org/specification/) on [eno-lang.org](https://eno-lang.org)**, where they are presented in a more accessible and even interactive way.
 
 The one remaining thing still happening in this repository is the development and
-publication of RFCs pertaining to the last remaining, not yet fully specified features of Eno (about 5%) - take a look at the `rfcs-final-spec/` directory for those.
+publication of RFCs pertaining to the last remaining, not yet fully specified features of Eno.
 
-Feel free to open an issue if you have a question, feedback on an RFC or want to help out with something.
+## RFCs for the last remaining unspecified bits
+
+About 95% of Eno (including all fundamental characteristics of the language) have been stable for well over a year now.
+
+This directory holds proposals for the last remaining, not fully specified 5% of the specification, authored in the form of RFCs (request for comments). You are very welcome to comment on the proposals by opening an issue!
+
+The aim of these last RFCs is to eliminate design flaws and oversights, to fix ambiguities and propose changes only where they serve to make the language more readable, predictable and usable to the widest audience possible (as envisioned by the design philosophy and goals of eno).
