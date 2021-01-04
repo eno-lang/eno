@@ -1,6 +1,6 @@
 # Eno
 
-This is the original language development repository for the eno notation language.
+This is the original language development repository for the Eno language.
 
 **Most resources originally developed here have now been migrated to the [guide](https://eno-lang.org/guide/) and [specification](https://eno-lang.org/specification/) on [eno-lang.org](https://eno-lang.org)**, where they are presented in a more accessible and even interactive way.
 
