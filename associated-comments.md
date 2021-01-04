@@ -1,6 +1,11 @@
-# RFC: Comments associated with immediately following elements (revision 2)
+# RFC: Associated Comments (revision 3)
 
-This RFC proposes to give consecutive comment lines *immediately preceding* an element special significance by associating them with the element.
+This RFC proposes to give consecutive comment lines *immediately preceding* an
+element special significance by associating them with the element, as well as
+associating consecutive comment lines at the start of the document with the
+document itself.
+
+## Comments associated with elements
 
 Consider the following eno document:
 
@@ -80,6 +85,52 @@ would result in
 '⇥·space-tab-space\n·⇥space-space-tab\n⇥⇥space-tab-tab'
 ```
 
+## Comment associated with the document
+
+Consider the following eno document:
+
+```eno
+> foo.eno
+> Contains many foo and much bar.
+> (c) 2020, Alice
+
+> very_annotated
+My element: Value
+```
+
+Following this proposal the first three comment lines would get associated with
+the document, making them available through the parser API for instance in the
+following way (for javascript in this example):
+
+```js
+const comment = document.comment();
+  // returns 'foo.eno\nContains many foo and much bar.\n(c) 2020, Alice'
+```
+
+If a comment is both at the beginning of the document and also immediately
+precedes an element, the association with the element is prioritized over the
+association to the document, i.e. one can not omit the empty line between the
+document comment and the first element such as this:
+
+```eno
+> foo.eno
+> Contains many foo and much bar.
+> (c) 2020, Alice
+My element: Value
+```
+
+In a hypothetical code example this would result in the following:
+
+```js
+const comment = document.comment();
+  // returns null
+  
+const comment = document.element('My element').comment();
+  // returns 'foo.eno\nContains many foo and much bar.\n(c) 2020, Alice'
+```
+
+## Further thoughts
+
 Associated comments would not functionally change anything about the way existing eno documents work, therefore they would be completely harmless to introduce, but at the same time would offer a great deal of added flexibility and facilitate usecases such as documentation generation, or allowing custom metadata notation for domain specific usecases, eg. an inline schema, type annotations. etc.
 
 Another point in favor of this is probably that it adds functionality without making the language more complex for non-technical users - relying on these associated comments for implementing something would be at the discretion of application architects and developers.
@@ -106,6 +157,8 @@ My field = My value
 ```
 
 ## Revision history
+
+**rev3:** Added comments associated with the document.
 
 **rev2:** Revised the indentation processing rules: Stripping shared indentation relative to a general baseline (as rev1 proposed) turns out to be an extremely complex behavior to specify and implement considering the fact that spaces and tabs could be used and mixed both before and after the comment operator, leading to a multitude of strange and for document authors hardly understandable parsing results. Referencing the comment operator as the baseline for indentation stripping greatly simplifies things: The only problematic behavior results of mixing tabs and spaces in the indentation past the operator, this is an accepted edge case and users are expected to provide sane input.
 
